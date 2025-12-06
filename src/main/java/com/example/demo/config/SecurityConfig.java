@@ -1,7 +1,8 @@
 package com.example.demo.config;
 
 import com.example.demo.security.CustomUserDetailsService;
-import com.example.demo.security.JwtFilter;
+//import com.example.demo.security.JwtFilter;
+import com.example.demo.security.JwtPathFilter;
 import com.example.demo.security.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,7 +39,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .addFilterBefore(new JwtFilter(jwtUtil, authenticationManager(httpSecurity.getSharedObject(AuthenticationConfiguration.class))), UsernamePasswordAuthenticationFilter.class);
+//                .addFilterBefore(new JwtFilter(jwtUtil, authenticationManager(httpSecurity.getSharedObject(AuthenticationConfiguration.class))), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtPathFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
 

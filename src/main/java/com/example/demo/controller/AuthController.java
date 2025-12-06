@@ -3,10 +3,14 @@ package com.example.demo.controller;
 import com.example.demo.dto.LoginDTO;
 import com.example.demo.model.AuthResponse;
 import com.example.demo.security.JwtUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -19,7 +23,6 @@ public class AuthController {
         this.authenticationManager = authenticationManager;
     }
 
-//    @RequestMapping(method = RequestMethod.POST)
     @PostMapping("/access-token")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) throws Exception{
         try {
@@ -35,7 +38,11 @@ public class AuthController {
             authResponse.setExpirationTime(expirationTime);
             return ResponseEntity.ok(authResponse);
         }catch (Exception e){
-            return ResponseEntity.badRequest().body("Invalid Credential");
+            Map<String, Object> errorMessage = new HashMap<>();
+            errorMessage.put("error", "Invalid Username or Password");
+            errorMessage.put("message", e.getMessage().toString());
+            ObjectMapper obj = new ObjectMapper();
+            return ResponseEntity.badRequest().body(errorMessage);
         }
 
     }
